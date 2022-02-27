@@ -17,6 +17,9 @@ export default class NewBill {
   }
   handleChangeFile = e => {
     e.preventDefault()
+
+    this.removeAnError(this.document.querySelector(`input[data-testid="file"]`));
+
     const file = this.document.querySelector(`input[data-testid="file"]`).files[0]
     const filePath = e.target.value.split(/\\/g)
     const fileName = filePath[filePath.length-1]
@@ -25,7 +28,16 @@ export default class NewBill {
     formData.append('file', file)
     formData.append('email', email)
 
-    this.store
+    //Récupération de l'extention
+    const fileExt = fileName.split(".")[1];
+
+    //Vérification de l'extension
+    const ExtSupported = ["jpg", "jpeg", "png"];
+
+    if(ExtSupported.includes(fileExt))
+    {
+      //Attention aux insertions null
+      this.store
       .bills()
       .create({
         data: formData,
@@ -39,7 +51,50 @@ export default class NewBill {
         this.fileUrl = fileUrl
         this.fileName = fileName
       }).catch(error => console.error(error))
+    }
+    else
+    {
+      this.triggerAnError(this.document.querySelector(`input[data-testid="file"]`));
+    }
   }
+
+  //Function to generate an error under an input
+  triggerAnError(input)
+  {
+      const parentNode = input.parentNode;
+
+      //Vérification de l'existance d'un message d'erreur
+      const errorMsg = parentNode.getElementsByClassName("errorMessage");
+      const checkIfErrorExist = document.body.contains(errorMsg[0]);
+
+      if(checkIfErrorExist == false)
+      {
+        const errorDOM = document.createElement("p");
+        errorDOM.classList.add("errorMessage");
+        errorDOM.textContent = "L'extension de votre fichier n'est pas supportée. Seuls les fichiers JPG, JPEG et PNG sont acceptés.";
+        parentNode.appendChild(errorDOM);
+      }
+
+      input.classList.remove("blue-border");
+
+      input.style.border = "2px solid red";
+      input.value = "";
+  }
+
+  //Function to remove an error under an input
+  removeAnError(input)
+  {
+    input.classList.add("blue-border");
+    const parentNode = input.parentNode;
+    const errorMsg = parentNode.getElementsByClassName("errorMessage");
+    if(errorMsg.length > 0)
+    {
+      parentNode.removeChild(errorMsg[0]);
+    }
+  }
+
+
+
   handleSubmit = e => {
     e.preventDefault()
     console.log('e.target.querySelector(`input[data-testid="datepicker"]`).value', e.target.querySelector(`input[data-testid="datepicker"]`).value)
@@ -57,6 +112,7 @@ export default class NewBill {
       fileName: this.fileName,
       status: 'pending'
     }
+    console.log(bill);
     this.updateBill(bill)
     this.onNavigate(ROUTES_PATH['Bills'])
   }
