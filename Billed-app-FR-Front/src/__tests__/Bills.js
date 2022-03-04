@@ -39,7 +39,7 @@ describe("Given I am connected as an employee", () => {
       expect(dates).toEqual(datesSorted)
     })
     //Permet de tester l'appel d'une fonction lorsque l'utilisateur clique sur le btn
-    test.only("Then, when I click on the new bill button the page to create a bill is loaded", () => {   
+    test("Then, when I click on the new bill button the page to create a bill is loaded", () => {   
       Object.defineProperty(window, 'localStorage', { value: localStorageMock });
       window.localStorage.setItem('user', JSON.stringify({
         type: 'Employee'
