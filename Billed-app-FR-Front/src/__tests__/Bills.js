@@ -38,5 +38,25 @@ describe("Given I am connected as an employee", () => {
       const datesSorted = [...dates].sort(antiChrono)
       expect(dates).toEqual(datesSorted)
     })
+    //Permet de tester l'appel d'une fonction lorsque l'utilisateur clique sur le btn
+    test("Then, when I click on the new bill button the page to create a bill is loaded", () => {   
+      Object.defineProperty(window, 'localStorage', { value: localStorageMock });
+      window.localStorage.setItem('user', JSON.stringify({
+        type: 'Employee'
+      }));
+      document.body.innerHTML = BillsUI({ data: bills });
+      const onNavigate = (pathname) => {
+        document.body.innerHTML = ROUTES({ pathname });
+      }
+      const store = null;
+      const newBills = new Bills({
+        document, onNavigate, store, localStorage: window.localStorage
+      });
+      const handleClickNewBill = jest.fn(newBills.handleClickNewBill);
+      const newBillBtn = screen.getByTestId("btn-new-bill"); 
+      newBillBtn.addEventListener('click', handleClickNewBill);
+      userEvent.click(newBillBtn);
+      expect(handleClickNewBill).toHaveBeenCalled();
+    })
   })
 })
