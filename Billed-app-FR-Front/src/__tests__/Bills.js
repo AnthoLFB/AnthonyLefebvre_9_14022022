@@ -61,5 +61,34 @@ describe("Given I am connected as an employee", () => {
       const form = screen.getByTestId('form-new-bill');
       expect(form).toBeTruthy();
     })
+    //Permet de tester l'ouverture de la modale lors d'un clic sur l'icone en forme d'oeil
+    test('Then I click on the icon eye and a modal should open', () => {
+      Object.defineProperty(window, 'localStorage', { value: localStorageMock });
+      window.localStorage.setItem('user', JSON.stringify({
+        type: 'Employee'
+      }));
+      document.body.innerHTML = BillsUI({ data: bills });
+      const onNavigate = (pathname) => {
+        document.body.innerHTML = ROUTES({ pathname });
+      }
+      const store = null;
+      const newBills = new Bills({
+        document, onNavigate, store, localStorage: window.localStorage
+      });
+
+       //Mock the .modal()
+       $.fn.modal = jest.fn();
+
+      const eyeBtn = document.querySelector("#eye");
+      const handleClickIconEye = jest.fn(newBills.handleClickIconEye(eyeBtn));
+      
+      
+      eyeBtn.addEventListener('click', handleClickIconEye);
+      userEvent.click(eyeBtn);
+      
+      expect(handleClickIconEye).toHaveBeenCalled();
+      const modale = screen.getByTestId('modaleFile');
+      expect(modale).toBeTruthy();
+    })
   })
 })
