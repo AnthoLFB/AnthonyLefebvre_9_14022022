@@ -13,6 +13,8 @@ import store from "../__mocks__/store";
 import mockStore from "../__mocks__/store"
 import router from "../app/Router.js";
 
+jest.mock("../app/store", () => mockStore)
+
 describe("Given I am connected as an employee", () => {
   describe("When I am on Bills Page", () => {
     test("Then bill icon in vertical layout should be highlighted", async () => {
@@ -83,7 +85,6 @@ describe("Given I am connected as an employee", () => {
       const eyeBtn = document.querySelector("#eye");
       const handleClickIconEye = jest.fn(newBills.handleClickIconEye(eyeBtn));
       
-      
       eyeBtn.addEventListener('click', handleClickIconEye);
       userEvent.click(eyeBtn);
       
@@ -133,8 +134,8 @@ describe("Given I am a user connected as Employee", () => {
         const errorMsg = screen.getByTestId('error-message');
         expect(errorMsg).toBeTruthy()
         
-        /*const message = await screen.getByText(/Erreur 404/)
-        expect(message).toBeTruthy()*/
+        const message = await screen.getByText(/Erreur 404/)
+        expect(message).toBeTruthy()
       })
       test("fetches messages from an API and fails with 500 message error", async () => {
 
@@ -151,8 +152,8 @@ describe("Given I am a user connected as Employee", () => {
         const errorMsg = screen.getByTestId('error-message');
         expect(errorMsg).toBeTruthy()
 
-        /*const message = await screen.getByText(/Erreur 500/)
-        expect(message).toBeTruthy()*/
+        const message = await screen.getByText(/Erreur 500/)
+        expect(message).toBeTruthy()
       })
     })
   })
