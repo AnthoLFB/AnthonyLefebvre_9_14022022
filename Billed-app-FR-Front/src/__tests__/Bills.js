@@ -79,8 +79,12 @@ describe("Given I am connected as an employee", () => {
         document, onNavigate, store, localStorage: window.localStorage
       });
 
-       //Mock the .modal()
-       $.fn.modal = jest.fn();
+      //Mock the .modal()
+      $.fn.modal = jest.fn();
+
+      //Vérifie que la modale n'est pas affiché
+      let modale = screen.getByTestId('modaleFile');
+      expect(modale.classList.contains('show')).toBe(false);
 
       const eyeBtn = document.querySelector("#eye");
       const handleClickIconEye = jest.fn(newBills.handleClickIconEye(eyeBtn));
@@ -89,7 +93,7 @@ describe("Given I am connected as an employee", () => {
       userEvent.click(eyeBtn);
       
       expect(handleClickIconEye).toHaveBeenCalled();
-      const modale = screen.getByTestId('modaleFile');
+      modale = screen.getByTestId('modaleFile');
       expect(modale).toBeTruthy();
     })
   })
