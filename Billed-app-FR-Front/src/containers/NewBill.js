@@ -29,12 +29,13 @@ export default class NewBill {
     formData.append('email', email)
 
     //Récupération de l'extention
-    const fileExt = fileName.split(".")[1];
+    const fileType = file['type'].split("/")[0];
+    const fileExt = file['type'].split("/")[1];
 
     //Vérification de l'extension
     const ExtSupported = ["jpg", "jpeg", "png"];
 
-    if(ExtSupported.includes(fileExt))
+    if(ExtSupported.includes(fileExt) && fileType === "image")
     {
       //Attention aux insertions null
       this.store
