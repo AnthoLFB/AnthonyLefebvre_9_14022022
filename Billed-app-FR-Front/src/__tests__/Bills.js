@@ -61,8 +61,8 @@ describe("Given I am connected as an employee", () => {
       const form = screen.getByTestId('form-new-bill');
       expect(form).toBeTruthy();
     })
-    //Permet de tester l'ouverture de la modale lors d'un clic sur l'icone en forme d'oeil
-    test('Then I click on the icon eye and a modal should open', () => {
+    //Permet de tester l'appel de la fonction permettant de gérer la modale lors d'un clic sur l'icone en forme d'oeil
+    test('Then I click on the icon eye and a function to show the modal should be called', () => {
       Object.defineProperty(window, 'localStorage', { value: localStorageMock });
       window.localStorage.setItem('user', JSON.stringify({
         type: 'Employee'
@@ -87,8 +87,54 @@ describe("Given I am connected as an employee", () => {
       userEvent.click(eyeBtn);
       
       expect(handleClickIconEye).toHaveBeenCalled();
-      const modale = screen.getByTestId('modaleFile');
-      expect(modale).toBeTruthy();
+    })
+    //Permet de tester l'ouverture de la modale lors d'un clic sur l'icone en forme d'oeil
+    test.only('Then I click on the icon eye and a modal should open', async () => {
+      Object.defineProperty(window, 'localStorage', { value: localStorageMock })
+      window.localStorage.setItem('user', JSON.stringify({
+        type: 'Employee'
+      }))
+      document.body.innerHTML = BillsUI({data: bills})
+      const onNavigate = (pathname) => {
+        document.body.innerHTML = ROUTES({ pathname })
+      }
+      const store = null
+      const newBills = new Bills({
+        document, onNavigate, store, bills, localStorage: window.localStorage
+      })
+      
+      //Mock the .modal()
+      $.fn.modal = jest.fn();
+
+      let modale = document.getElementsByClassName('modal-body');
+
+      let value;
+
+      if(typeof modale[0].childNodes[0].childNodes[0] === "undefined")
+      {
+        //S'il n'y a pas de child, alors aucune image n'est affichée dans la modale
+        value = null;
+      }
+      else
+      {
+        value = modale[0].childNodes[0].childNodes[0].src;
+      }
+
+      //Dans un premier temps, la modale doit être vide. Ensuite lorsque l'on clique sur l'icone alors l'image s'affiche.
+      expect(value).toBeNull();
+
+      const handleClickIconEye = newBills.handleClickIconEye
+      const eye = screen.getAllByTestId('icon-eye')
+      eye[1].addEventListener('click', handleClickIconEye(eye[1]))
+      userEvent.click(eye[1])
+
+      modale = document.getElementsByClassName('modal-body');
+      
+      let ExpectFileUrl = "https://test.storage.tld/v0/b/billable-677b6.a…61.jpeg?alt=media&token=7685cd61-c112-42bc-9929-8a799bb82d8b";
+      let uriDecodeTestLink = decodeURI(modale[0].childNodes[0].childNodes[0].src)      
+
+      expect(uriDecodeTestLink).not.toBeNull();
+      expect(uriDecodeTestLink).toBe(ExpectFileUrl);
     })
   })
 })
