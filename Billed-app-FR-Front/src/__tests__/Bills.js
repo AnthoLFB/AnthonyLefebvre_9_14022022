@@ -89,7 +89,7 @@ describe("Given I am connected as an employee", () => {
       expect(handleClickIconEye).toHaveBeenCalled();
     })
     //Permet de tester l'ouverture de la modale lors d'un clic sur l'icone en forme d'oeil
-    test.only('Then I click on the icon eye and a modal should open', async () => {
+    test('Then I click on the icon eye and a modal should open', async () => {
       Object.defineProperty(window, 'localStorage', { value: localStorageMock })
       window.localStorage.setItem('user', JSON.stringify({
         type: 'Employee'
@@ -130,8 +130,8 @@ describe("Given I am connected as an employee", () => {
 
       modale = document.getElementsByClassName('modal-body');
       
-      let ExpectFileUrl = "https://test.storage.tld/v0/b/billable-677b6.a…61.jpeg?alt=media&token=7685cd61-c112-42bc-9929-8a799bb82d8b";
-      let uriDecodeTestLink = decodeURI(modale[0].childNodes[0].childNodes[0].src)      
+      let ExpectFileUrl = "https://test.storage.tld/v0/b/billable-677b6.a…dur.png?alt=media&token=571d34cb-9c8f-430a-af52-66221cae1da3";
+      let uriDecodeTestLink = decodeURI(modale[0].childNodes[0].childNodes[0].src)  
 
       expect(uriDecodeTestLink).not.toBeNull();
       expect(uriDecodeTestLink).toBe(ExpectFileUrl);
