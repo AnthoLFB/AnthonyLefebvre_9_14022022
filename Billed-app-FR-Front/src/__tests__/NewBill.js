@@ -8,7 +8,7 @@ import router from "../app/Router.js";
 import store from "../__mocks__/store";
 import {ROUTES_PATH} from "../constants/routes.js";
 import NewBill from "../containers/NewBill.js";
-
+import NewBillUI from "../views/NewBillUI.js";
 
 describe("Given I am connected as an employee", () => {
   describe("When I am on NewBill Page", () => {
@@ -117,5 +117,18 @@ describe("Given I am connected as an employee", () => {
       expect(countErrorMessage).not.toBeNull();
       expect(countErrorMessage).toBe(1);
     })
+  })
+
+  describe("When I click on the submit button", () => {
+    test("Then a bill is created", () => {
+      const html = NewBillUI();
+      document.body.innerHTML = html;
+      const newBill = new NewBill({ document, onNavigate, store: null, localStorage })
+      const handleSubmit = jest.fn((e) => newBill.handleSubmit(e))
+      const submit = screen.getByTestId('form-new-bill');
+      submit.addEventListener('submit', handleSubmit);
+      fireEvent.submit(submit)
+      expect(handleSubmit).toHaveBeenCalled();
+    });
   })
 })
