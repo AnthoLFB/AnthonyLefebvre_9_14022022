@@ -121,6 +121,7 @@ describe("Given I am connected as an employee", () => {
   })
 })
 
+/*
 describe('Given I am a user connected as Employee', () => {
   describe("When I submit the form completed", () => {
       test("Then the bill is created", async () => {
@@ -171,6 +172,54 @@ describe('Given I am a user connected as Employee', () => {
           fireEvent.submit(form)
 
           expect(handleSubmit).toHaveBeenCalled()
+          expect(newBill.updateBill).toHaveBeenCalled()
+      })
+  })
+})
+*/
+
+describe('Given I am a user connected as Employee', () => {
+  describe("When I submit the form completed", () => {
+      test("Then the bill is created", async () => {
+
+        Object.defineProperty(window, 'localStorage', { value: localStorageMock })
+        window.localStorage.setItem('user', JSON.stringify({
+          type: 'Employee'
+        }))
+        const root = document.createElement("div")
+        root.setAttribute("id", "root")
+        document.body.append(root)
+        router()
+        window.onNavigate(ROUTES_PATH.NewBill)
+
+        const newBill = new NewBill({document, onNavigate, store: null, localStorage: window.localStorage})
+
+          const prototypeBill = {
+              type: "Restaurants et bars",
+              name: "Restaurant test",
+              date: "2022-02-26",
+              amount: 145,
+              vat: 70,
+              pct: 30,
+              commentary: "Test form",
+              fileUrl: "test.jpg",
+              fileName: "test.jpg",
+              status: "pending"
+          };
+
+          screen.getByTestId("expense-type").value = prototypeBill.type;
+          screen.getByTestId("expense-name").value = prototypeBill.name;
+          screen.getByTestId("datepicker").value = prototypeBill.date;
+          screen.getByTestId("amount").value = prototypeBill.amount;
+          screen.getByTestId("vat").value = prototypeBill.vat;
+          screen.getByTestId("pct").value = prototypeBill.pct;
+          screen.getByTestId("commentary").value = prototypeBill.commentary;
+          
+          newBill.updateBill = jest.fn();
+
+          let test = document.getElementById("btn-send-bill")
+          userEvent.click(test)
+          
           expect(newBill.updateBill).toHaveBeenCalled()
       })
   })
