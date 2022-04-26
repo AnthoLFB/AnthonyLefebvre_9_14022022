@@ -146,6 +146,7 @@ export default class {
     }
 
     bills.forEach(bill => {
+      //Ajout d'une variable permettant de savoir dans quelle liste on se trouve afin de pouvoir naviguer entre celles-ci 
       $(`#status-bills-container${this.index} #open-bill${bill.id}`).click((e) => this.handleEditTicket(e, bill, bills))
     })
 
